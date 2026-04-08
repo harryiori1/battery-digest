@@ -2,7 +2,18 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "battery-digest",
   "compatibility_date": "2026-04-08",
+  "main": "src/worker.js",
   "assets": {
-    "directory": "output"
+    "directory": "output",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SUBSCRIBERS",
+      "id": "PLACEHOLDER"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 9 * * *"]
   }
 }

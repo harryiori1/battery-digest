@@ -215,6 +215,15 @@ def build():
         with open(os.path.join(page_out_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write(page_tpl.render(**ctx, page=page))
 
+    # Subscribe page
+    subscribe_tpl_path = os.path.join(TEMPLATES_DIR, "subscribe.html")
+    if os.path.exists(subscribe_tpl_path):
+        subscribe_tpl = env.get_template("subscribe.html")
+        subscribe_out = os.path.join(OUTPUT_DIR, "subscribe")
+        os.makedirs(subscribe_out, exist_ok=True)
+        with open(os.path.join(subscribe_out, "index.html"), "w", encoding="utf-8") as f:
+            f.write(subscribe_tpl.render(**ctx))
+
     # RSS
     if digests:
         generate_rss(digests, config)

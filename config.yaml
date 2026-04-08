@@ -12,5 +12,7 @@ nav:
     url: "/archive/"
   - title: "Methodology"
     url: "/methodology/"
+  - title: "Subscribe"
+    url: "/subscribe/"
   - title: "RSS"
     url: "/feed.xml"

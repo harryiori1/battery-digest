@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Subscribe - {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="subscribe-page">
+  <div class="subscribe-hero">
+    <h1>Subscribe to Battery Digest</h1>
+    <p class="subscribe-tagline">{{ site.tagline }} Delivered to your inbox daily at 9 AM.</p>
+  </div>
+
+  <div class="subscribe-form-wrapper">
+    <form id="subscribe-form" class="subscribe-form">
+      <input type="email" id="email-input" placeholder="your@email.com" required>
+      <button type="submit" id="subscribe-btn">Subscribe</button>
+    </form>
+    <p id="form-message" class="form-message"></p>
+  </div>
+
+  <div class="subscribe-details">
+    <h2>What you get</h2>
+    <ul>
+      <li>Top 3 battery industry stories, curated daily from 7+ sources</li>
+      <li>200-500 word summaries so you don't need to click through</li>
+      <li>Coverage of Chinese sources translated to English</li>
+      <li>No spam, no sponsors. Unsubscribe anytime.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+document.getElementById("subscribe-form").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById("subscribe-btn");
+  const msg = document.getElementById("form-message");
+  const email = document.getElementById("email-input").value.trim();
+
+  btn.disabled = true;
+  btn.textContent = "Subscribing...";
+  msg.textContent = "";
+  msg.className = "form-message";
+
+  try {
+    const resp = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await resp.json();
+
+    if (resp.ok) {
+      msg.textContent = "You're subscribed! Check your inbox tomorrow at 9 AM.";
+      msg.className = "form-message success";
+      document.getElementById("email-input").value = "";
+    } else {
+      msg.textContent = data.error || "Something went wrong. Please try again.";
+      msg.className = "form-message error";
+    }
+  } catch (err) {
+    msg.textContent = "Network error. Please try again.";
+    msg.className = "form-message error";
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Subscribe";
+});
+</script>
+{% endblock %}
