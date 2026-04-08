@@ -1,0 +1,361 @@
+/* === Reset & Base === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  line-height: 1.8;
+  color: #1a1a1a;
+  background: #fafafa;
+}
+
+a { color: #2563eb; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* === Header === */
+header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.site-title:hover { text-decoration: none; }
+
+header nav a {
+  margin-left: 1.5rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* === Hero (Home) === */
+.hero {
+  margin-bottom: 2.5rem;
+}
+
+.hero h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.tagline-sub {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+/* === Digest List (Home) === */
+.digest-entry {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.digest-date {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.story-list {
+  list-style: none;
+  padding: 0;
+}
+
+.story-list li {
+  margin-bottom: 0.35rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.story-list li::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0;
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.story-list li a {
+  color: #1a1a1a;
+  font-weight: 500;
+}
+.story-list li a:hover {
+  color: #2563eb;
+}
+
+.digest-meta {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.read-link {
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.curated-from {
+  color: #999;
+  margin-left: 1rem;
+}
+
+.more-link {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+}
+
+/* === Digest Page === */
+.digest-header {
+  margin-bottom: 2rem;
+}
+
+.digest-header .digest-date {
+  font-size: 0.9rem;
+}
+
+.tags {
+  margin-top: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  background: #e8e8e8;
+  color: #555;
+  padding: 0.15rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  margin-right: 0.4rem;
+}
+
+/* === Featured Stories === */
+.story {
+  margin-bottom: 2.5rem;
+}
+
+.story h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.num {
+  color: #aaa;
+  font-weight: 300;
+  margin-right: 0.5rem;
+}
+
+.subtitle {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.story-body {
+  margin-bottom: 1rem;
+}
+
+.story-body p {
+  margin-bottom: 0.8rem;
+}
+
+.story-body ul, .story-body ol {
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.story-body li {
+  margin-bottom: 0.3rem;
+}
+
+.story-body strong {
+  font-weight: 600;
+}
+
+.sources {
+  font-size: 0.85rem;
+  color: #666;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.sources-label {
+  color: #999;
+}
+
+.sources a {
+  color: #2563eb;
+}
+
+/* === Quick News === */
+.quick-news {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #eee;
+}
+
+.quick-news h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.quick-news-item {
+  margin-bottom: 0.7rem;
+  line-height: 1.6;
+}
+
+.quick-news-item .num {
+  font-size: 0.85rem;
+}
+
+.qn-title {
+  font-weight: 500;
+}
+
+.qn-source {
+  font-size: 0.8rem;
+  color: #888;
+  margin-left: 0.3rem;
+}
+
+/* === Share Bar === */
+.share-bar {
+  margin-top: 2rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #eee;
+  font-size: 0.85rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.share-bar a {
+  color: #555;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.copy-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  color: #555;
+  cursor: pointer;
+}
+.copy-btn:hover { background: #f0f0f0; }
+
+/* === Digest Navigation === */
+.digest-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.nav-prev, .nav-next {
+  color: #555;
+}
+
+/* === Archive === */
+.archive-month {
+  margin-bottom: 2rem;
+}
+
+.archive-month h2 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.archive-list {
+  list-style: none;
+  padding: 0;
+}
+
+.archive-list li {
+  margin-bottom: 0.4rem;
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.archive-list time {
+  font-size: 0.8rem;
+  color: #999;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* === Static Pages === */
+.static-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-body p {
+  margin-bottom: 1rem;
+}
+
+.page-body h2 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-body ul, .page-body ol {
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.page-body li {
+  margin-bottom: 0.3rem;
+}
+
+/* === Footer === */
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  font-size: 0.8rem;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+footer nav a {
+  color: #999;
+  margin-left: 1rem;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+  body { padding: 0.75rem 1rem; }
+  .header-inner { flex-direction: column; gap: 0.5rem; }
+  header nav a { margin-left: 0; margin-right: 1rem; }
+  footer { flex-direction: column; gap: 0.5rem; }
+  .digest-nav { flex-direction: column; gap: 0.5rem; }
+}
