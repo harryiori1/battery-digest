@@ -45,28 +45,31 @@ slug: "YYYY-MM-DD-short-slug"
 curated_from: NUMBER
 tags: [tag1, tag2]
 stories:
-  - title: Short Title
-    subtitle: One sentence
-  - title: Short Title
-    subtitle: One sentence
-  - title: Short Title
-    subtitle: One sentence
+  - title: "Short Title"
+    subtitle: "One sentence"
+  - title: "Short Title"
+    subtitle: "One sentence"
+  - title: "Short Title"
+    subtitle: "One sentence"
 quick_news:
-  - title: Brief item one
-  - title: Brief item two
+  - title: "Brief item one"
+  - title: "Brief item two"
 ---
 
 ## 01 Short Title
-2-3 sentences. [Source Name](url) and [Source Name](url).
+Write a comprehensive 200-500 word article that covers the key details: what happened, why it matters for the battery industry, relevant numbers/specs, and broader implications. Write as a journalist summarizing the news for an English-speaking professional audience. At the end, cite sources as inline links like [Source Name](url).
 
 ## 02 Short Title
-2-3 sentences. [Source Name](url).
+200-500 word article. [Source Name](url).
 
 ## 03 Short Title
-2-3 sentences. [Source Name](url).
+200-500 word article. [Source Name](url).
 
 Rules:
-- Real URLs only. Be concise. Output ONLY the markdown.
+- ALWAYS quote titles and subtitles in YAML frontmatter with double quotes.
+- Each article body MUST be 200-500 words. Readers should be able to understand the full story without clicking any links. This is especially important for Chinese-source stories where English readers cannot read the original.
+- Include specific details: numbers, company names, specs, dates, market context.
+- Real URLs only. Output ONLY the markdown.
 - NEVER repeat topics from "ALREADY COVERED" list. If a story is an update on a previously covered topic (e.g. same company, same product, same trend), skip it.
 - Titles must be SPECIFIC. Include company names, numbers, or concrete details. BAD: "Global EV Market Trends", "Advancements in Battery Technology". GOOD: "CATL Opens 100GWh Hungary Plant", "Sodium-Ion Cells Hit 200Wh/kg in Lab Tests".
 - If fewer than 3 genuinely new stories exist, output only the ones that are real. NEVER pad with filler like "No New Developments"."""
@@ -109,6 +112,9 @@ def format_articles_for_prompt(raw_data):
         else:
             lines.append(f"[{i}] [{article['source_name']}] {title}")
         lines.append(f"    {article['url']}")
+        snippet = article.get('snippet', '')
+        if snippet:
+            lines.append(f"    Summary: {snippet[:400]}")
     return "\n".join(lines)
 
 

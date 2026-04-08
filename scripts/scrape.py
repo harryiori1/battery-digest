@@ -65,12 +65,20 @@ def fetch_rss(source, client):
 
     articles = []
     for entry in feed.entries:
+        # Extract summary/description for LLM context
+        summary = entry.get("summary", "") or entry.get("description", "")
+        if summary:
+            # Strip HTML tags from summary
+            from bs4 import BeautifulSoup as BS
+            summary = BS(summary, "html.parser").get_text(separator=" ").strip()
+            summary = summary[:500]  # Cap at 500 chars
         articles.append({
             "title": entry.get("title", "").strip(),
             "url": entry.get("link", "").strip(),
             "source_name": source["name"],
             "date": entry.get("published", ""),
             "language": source["language"],
+            "snippet": summary,
         })
 
     logger.info(f"  {source['name']}: fetched {len(articles)} articles from RSS")
