@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ digest.date_display }} - {{ site.title }}{% endblock %}
+{% block description %}{{ digest.stories[0].title if digest.stories else site.description }}{% endblock %}
+
+{% block content %}
+<article class="digest-page">
+  <header class="digest-header">
+    <time class="digest-date">{{ digest.date_display }}</time>
+    {% if digest.curated_from %}
+    <span class="curated-from">Curated from {{ digest.curated_from }} sources</span>
+    {% endif %}
+    {% if digest.tags %}
+    <div class="tags">
+      {% for tag in digest.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <section class="featured-stories">
+    {% for story in digest.stories[:3] %}
+    <div class="story">
+      <h2><span class="num">{{ '%02d' % loop.index }}</span> {{ story.title }}</h2>
+      {% if story.subtitle %}
+      <p class="subtitle">{{ story.subtitle }}</p>
+      {% endif %}
+
+      {% if digest.html_sections[loop.index0] is defined %}
+      <div class="story-body">
+        {{ digest.html_sections[loop.index0] | safe }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+
+  {% if digest.quick_news %}
+  <section class="quick-news">
+    <h2>Quick News</h2>
+    {% set start_num = digest.stories | length + 1 %}
+    {% for item in digest.quick_news %}
+    <div class="quick-news-item">
+      <span class="num">{{ '%02d' % (start_num + loop.index0) }}</span>
+      <span class="qn-title">{{ item.title }}</span>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <nav class="digest-nav">
+    {% if prev_digest %}
+    <a href="/digest/{{ prev_digest.slug }}.html" class="nav-prev">&larr; {{ prev_digest.date_display }}</a>
+    {% endif %}
+    {% if next_digest %}
+    <a href="/digest/{{ next_digest.slug }}.html" class="nav-next">{{ next_digest.date_display }} &rarr;</a>
+    {% endif %}
+  </nav>
+</article>
+{% endblock %}

@@ -1,0 +1,143 @@
+# Battery Digest - Source Configuration
+
+# Battery-related keyword filters (match title + snippet)
+keywords:
+  en:
+    - battery
+    - energy storage
+    - solid-state
+    - solid state
+    - lithium
+    - sodium-ion
+    - sodium ion
+    - EV battery
+    - cathode
+    - anode
+    - electrolyte
+    - cell-to-pack
+    - CATL
+    - BYD
+    - LFP
+    - NMC
+    - LG Energy
+    - Samsung SDI
+    - Panasonic Energy
+    - SK On
+    - QuantumScape
+    - Solid Power
+    - wh/kg
+    - kwh
+    - gigafactory
+    - battery recycling
+    - battery swap
+  zh:
+    - 电池
+    - 储能
+    - 固态
+    - 锂
+    - 钠离子
+    - 正极
+    - 负极
+    - 电解质
+    - 动力电池
+    - 宁德时代
+    - 比亚迪
+    - 亿纬锂能
+    - 国轩高科
+    - 中创新航
+    - 蜂巢能源
+    - 赣锋锂业
+    - 电芯
+    - 充电桩
+    - 超充
+    - 换电
+
+# Source list
+sources:
+  # --- English sources ---
+  - name: "Electrek"
+    url: "https://electrek.co/feed/"
+    type: rss
+    language: en
+    enabled: true
+
+  - name: "CnEVPost"
+    url: "https://cnevpost.com/"
+    type: html
+    language: en
+    enabled: true
+    selectors:
+      article_list: "li"
+      title: "h3 a"
+      link: "h3 a"
+      snippet: "p"
+
+  - name: "InsideEVs"
+    url: "https://insideevs.com/rss/news/all/"
+    type: rss
+    language: en
+    enabled: true
+
+  - name: "CleanTechnica"
+    url: "https://cleantechnica.com/feed/"
+    type: rss
+    language: en
+    enabled: true
+
+  # --- Chinese sources ---
+  - name: "36氪"
+    url: "https://36kr.com/feed"
+    type: rss
+    language: zh
+    enabled: true
+
+  - name: "第一电动"
+    url: "https://www.d1ev.com/news"
+    type: html
+    language: zh
+    enabled: true
+    selectors:
+      article_list: "div.ws-news a[href*='/news/']"
+      title: ""
+      link: ""
+      snippet: ""
+
+  - name: "OFweek锂电"
+    url: "https://libattery.ofweek.com/"
+    type: html
+    language: zh
+    enabled: true
+    ssl_verify: false
+    selectors:
+      article_list: "a[href*='/ART-']"
+      title: ""
+      link: ""
+      snippet: ""
+
+  - name: "高工锂电"
+    url: "https://www.gg-lb.com/art/news"
+    type: html
+    language: zh
+    enabled: false  # Server down (503), SSL expired
+    selectors:
+      article_list: "div.article-item"
+      title: "h3 a"
+      link: "h3 a"
+      snippet: "p.summary"
+
+  - name: "电池中国网"
+    url: "https://www.cbea.com/xny/"
+    type: html
+    language: zh
+    enabled: false  # Connection timeout
+    selectors:
+      article_list: "ul.listBox li"
+      title: "a"
+      link: "a"
+      snippet: ""
+
+# HTTP config
+http:
+  timeout: 15
+  max_retries: 2
+  user_agent: "BatteryDigest/1.0 (news aggregator)"

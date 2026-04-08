@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <h1>{{ site.tagline }}</h1>
+  <p class="tagline-sub">{{ site.tagline_sub }}</p>
+</section>
+
+<section class="digest-list">
+  {% for digest in digests %}
+  <article class="digest-entry">
+    <time class="digest-date">{{ digest.date_display }}</time>
+    <ol class="story-list">
+      {% for story in digest.stories[:3] %}
+      <li data-num="{{ '%02d' % loop.index }}">
+        <a href="/digest/{{ digest.slug }}.html">{{ story.title }}</a>
+      </li>
+      {% endfor %}
+    </ol>
+    <div class="digest-meta">
+      <a href="/digest/{{ digest.slug }}.html" class="read-link">Read &rarr;</a>
+      {% if digest.curated_from %}
+      <span class="curated-from">Curated from {{ digest.curated_from }} sources</span>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+
+<div class="more-link">
+  <a href="/archive/">View all digests &rarr;</a>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{
+  "date": "2026-04-05",
+  "scraped_at": "2026-04-05T09:47:16",
+  "sources_attempted": 7,
+  "sources_succeeded": 7,
+  "sources_failed": [],
+  "total_before_filter": 255,
+  "total_articles": 9,
+  "articles": [
+    {
+      "title": "BYD’s new EV is luring in buyers with 5 minute charging and prices starting at $22,000",
+      "url": "https://electrek.co/2026/04/03/byds-new-ev-lures-buyers-with-5-min-charging-low-prices/",
+      "source_name": "Electrek",
+      "date": "Fri, 03 Apr 2026 13:48:24 +0000",
+      "snippet": "BYD launched the Song Ultra EV in China, starting at just under $22,000. The new EV is one of the first to be equipped with its Blade Battery and Flash Charging, enabling recharge times in as little as 5 minutes. In less than a month, the electric SUV secured over 37,000 orders.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "This $8,500 EV in China racked up nearly 57,000 orders",
+      "url": "https://electrek.co/2026/03/31/8500-ev-china-57000-orders/",
+      "source_name": "Electrek",
+      "date": "Tue, 31 Mar 2026 19:06:41 +0000",
+      "snippet": "BYD’s top-selling Seagull EV has a new rival after Chery Automotive’s new QQ3 secured close to 57,000 orders. Chery launched the new EV in China, starting at about $8,500.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "VinFast is going all-in on electric scooters with massive battery swapping rollout in Vietnam",
+      "url": "https://electrek.co/2026/03/31/vinfast-is-going-all-in-on-electric-scooters-with-massive-battery-swapping-rollout-in-vietnam/",
+      "source_name": "Electrek",
+      "date": "Tue, 31 Mar 2026 14:54:30 +0000",
+      "snippet": "VinFast is making a bold push to electrify two-wheeled transport in Vietnam, with plans for a nationwide expansion of its electric scooter lineup alongside an ambitious battery swapping network that could reshape how riders think about charging.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "This $600M California battery will power 321,000 homes at peak demand",
+      "url": "https://electrek.co/2026/03/30/this-600m-california-battery-will-power-321000-homes-at-peak-demand/",
+      "source_name": "Electrek",
+      "date": "Mon, 30 Mar 2026 21:21:23 +0000",
+      "snippet": "Arevon is building a big new battery project just south of San Francisco, designed to keep the lights on when demand spikes.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "Semi-solid-state EV batteries are now powering up trucks and flying cars",
+      "url": "https://electrek.co/2026/03/30/semi-solid-state-ev-batteries-powering-up-trucks-flying-cars/",
+      "source_name": "Electrek",
+      "date": "Mon, 30 Mar 2026 19:03:02 +0000",
+      "snippet": "Semi-solid-state batteries are already expanding from the first passenger EVs to new segments, including flying cars and light trucks.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "New York City finally gets its first home battery storage system",
+      "url": "https://electrek.co/2026/03/27/new-york-city-first-home-battery-storage-system/",
+      "source_name": "Electrek",
+      "date": "Fri, 27 Mar 2026 21:49:23 +0000",
+      "snippet": "For the first time, a home battery is live on a New York City rooftop, opening the door for residential energy storage across the five boroughs.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "Nissan recalls a batch of new LEAF EVs in Japan due to a battery defect",
+      "url": "https://electrek.co/2026/03/27/nissan-recalls-new-leaf-evs-japan-battery-defect/",
+      "source_name": "Electrek",
+      "date": "Fri, 27 Mar 2026 17:01:58 +0000",
+      "snippet": "The new LEAF EV is a cornerstone of Nissan’s comeback plan, but it’s already facing a recall in Japan due to a battery defect.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "The first EV with a semi-solid-state battery is launching in Europe",
+      "url": "https://electrek.co/2026/03/26/first-ev-with-semi-solid-state-ev-batteries-launching-europe/",
+      "source_name": "Electrek",
+      "date": "Thu, 26 Mar 2026 17:37:57 +0000",
+      "snippet": "After introducing the first mass-produced EV with a semi-solid-state battery, MG Motor said it will bring the new battery tech to Europe by the end of 2026. In China, the new MG4 with a semi-solid-state battery starts at under $15,000. Although not that cheap, the new EV is expected to remain affordable in Europe.\n\n\n\n more…",
+      "language": "en"
+    },
+    {
+      "title": "BYD recruits James Bond to launch its new long-range, 5-min charging luxury EV",
+      "url": "https://electrek.co/2026/03/26/byd-recruits-james-bond-launch-new-longe-range-luxury-ev/",
+      "source_name": "Electrek",
+      "date": "Thu, 26 Mar 2026 15:59:49 +0000",
+      "snippet": "Is there anyone better to help promote a new high-end electric sports car? BYD is teaming up with Daniel Craig, AKA James Bond, to launch the new Denza Z9 GT in Europe. BYD said the new Denza Z9 GT is the “world’s longest-range pure EV” and supports ultra-fast charging in just 5 minutes.\n\n\n\n more…",
+      "language": "en"
+    }
+  ]
+}

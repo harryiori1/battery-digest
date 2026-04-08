@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Archive - {{ site.title }}{% endblock %}
+
+{% block content %}
+<h1>Archive</h1>
+
+{% for month_label, digests in archive_groups %}
+<section class="archive-month">
+  <h2>{{ month_label }}</h2>
+  <ul class="archive-list">
+    {% for digest in digests %}
+    <li>
+      <time>{{ digest.date }}</time>
+      <a href="/digest/{{ digest.slug }}.html">
+        {{ digest.stories[0].title if digest.stories else digest.date_display }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+{% endblock %}
