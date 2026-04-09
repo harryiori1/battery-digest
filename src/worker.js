@@ -14,12 +14,12 @@ export default {
     }
     if (url.pathname === "/api/test-email" && request.method === "POST") {
       try {
-        await sendDailyNewsletter(env);
-        return new Response(JSON.stringify({ success: true, message: "Newsletter sent!" }), {
+        const result = await sendDailyNewsletter(env, true);
+        return new Response(JSON.stringify(result), {
           headers: { "Content-Type": "application/json" },
         });
       } catch (e) {
-        return new Response(JSON.stringify({ error: e.message }), {
+        return new Response(JSON.stringify({ error: e.message, stack: e.stack }), {
           status: 500, headers: { "Content-Type": "application/json" },
         });
       }
@@ -84,11 +84,11 @@ async function handleUnsubscribe(request, env) {
 }
 
 // --- Daily Newsletter ---
-async function sendDailyNewsletter(env) {
+async function sendDailyNewsletter(env, debug = false) {
+  const log = [];
   const resendKey = env.RESEND_API_KEY;
   if (!resendKey) {
-    console.error("RESEND_API_KEY not set");
-    return;
+    return { error: "RESEND_API_KEY not set" };
   }
 
   const homepageUrl = "https://battery-digest.yubinxing.workers.dev";
@@ -101,11 +101,14 @@ async function sendDailyNewsletter(env) {
     const resp = await env.ASSETS.fetch(new Request("http://placeholder/index.html"));
     const html = await resp.text();
 
+    log.push(`Fetched index.html: ${html.length} chars`);
+
     // Extract the first digest link
     const linkMatch = html.match(/href="(\/digest\/[^"]+)"/);
     if (linkMatch) {
       digestLink = homepageUrl + linkMatch[1];
     }
+    log.push(`Digest link: ${digestLink}`);
 
     // Extract stories - match across whitespace/newlines
     const storyRegex = /data-num="(\d+)"[\s\S]*?<a[^>]*>([^<]+)<\/a>/g;
@@ -113,14 +116,13 @@ async function sendDailyNewsletter(env) {
     while ((match = storyRegex.exec(html)) !== null && stories.length < 3) {
       stories.push({ num: match[1], title: match[2].trim() });
     }
+    log.push(`Found ${stories.length} stories`);
   } catch (e) {
-    console.error("Failed to fetch homepage:", e);
-    return;
+    return { error: "Failed to fetch homepage", detail: e.message, log };
   }
 
   if (stories.length === 0) {
-    console.log("No stories found, skipping email");
-    return;
+    return { error: "No stories found", log };
   }
 
   // Build email HTML
@@ -138,12 +140,13 @@ async function sendDailyNewsletter(env) {
     cursor = list.list_complete ? null : list.cursor;
   } while (cursor);
 
-  console.log(`Sending newsletter to ${subscribers.length} subscribers`);
+  log.push(`Subscribers: ${subscribers.length} - ${subscribers.join(", ")}`);
 
   // Send to each subscriber (Resend free tier: 100/day)
+  const results = [];
   for (const email of subscribers) {
     try {
-      await fetch("https://api.resend.com/emails", {
+      const resp = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${resendKey}`,
@@ -156,10 +159,14 @@ async function sendDailyNewsletter(env) {
           html: emailHtml.replace("{{UNSUB_EMAIL}}", encodeURIComponent(email)),
         }),
       });
+      const resendResult = await resp.json();
+      results.push({ email, status: resp.status, result: resendResult });
     } catch (e) {
-      console.error(`Failed to send to ${email}:`, e);
+      results.push({ email, error: e.message });
     }
   }
+
+  return { success: true, log, stories, results };
 }
 
 function formatDate(dateStr) {
