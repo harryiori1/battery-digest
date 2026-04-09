@@ -91,26 +91,27 @@ async function sendDailyNewsletter(env) {
     return;
   }
 
-  // Get today's date
-  const today = new Date().toISOString().split("T")[0];
-
-  // Fetch the digest page to extract stories
-  const digestUrl = `https://battery-digest.yubinxing.workers.dev/digest/${today}-battery-news.html`;
   const homepageUrl = "https://battery-digest.yubinxing.workers.dev";
 
-  // Fetch the homepage to get today's stories from the HTML
+  // Fetch the homepage and extract stories from ALL digest entries
+  // Then pick the most recent one (first on the page)
   let stories = [];
+  let digestLink = "";
   try {
-    const resp = await fetch(`${homepageUrl}/`);
+    const resp = await env.ASSETS.fetch(new Request("http://placeholder/index.html"));
     const html = await resp.text();
 
-    // Extract stories from the first digest entry (today's)
-    const storyRegex = /<li data-num="(\d+)">\s*<a href="[^"]*">([^<]+)<\/a>/g;
+    // Extract the first digest link
+    const linkMatch = html.match(/href="(\/digest\/[^"]+)"/);
+    if (linkMatch) {
+      digestLink = homepageUrl + linkMatch[1];
+    }
+
+    // Extract stories - match across whitespace/newlines
+    const storyRegex = /data-num="(\d+)"[\s\S]*?<a[^>]*>([^<]+)<\/a>/g;
     let match;
-    let count = 0;
-    while ((match = storyRegex.exec(html)) !== null && count < 3) {
+    while ((match = storyRegex.exec(html)) !== null && stories.length < 3) {
       stories.push({ num: match[1], title: match[2].trim() });
-      count++;
     }
   } catch (e) {
     console.error("Failed to fetch homepage:", e);
@@ -118,12 +119,13 @@ async function sendDailyNewsletter(env) {
   }
 
   if (stories.length === 0) {
-    console.log("No stories found for today, skipping email");
+    console.log("No stories found, skipping email");
     return;
   }
 
   // Build email HTML
-  const emailHtml = buildEmailHtml(today, stories, digestUrl, homepageUrl);
+  const today = new Date().toISOString().split("T")[0];
+  const emailHtml = buildEmailHtml(today, stories, digestLink || homepageUrl, homepageUrl);
 
   // Get all subscribers
   const subscribers = [];
