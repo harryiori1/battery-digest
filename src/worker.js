@@ -12,6 +12,18 @@ export default {
     if (url.pathname === "/api/unsubscribe") {
       return handleUnsubscribe(request, env);
     }
+    if (url.pathname === "/api/test-email" && request.method === "POST") {
+      try {
+        await sendDailyNewsletter(env);
+        return new Response(JSON.stringify({ success: true, message: "Newsletter sent!" }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message }), {
+          status: 500, headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
 
     // Everything else: serve static assets
     return env.ASSETS.fetch(request);
@@ -136,7 +148,7 @@ async function sendDailyNewsletter(env) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Battery Digest <digest@battery-digest.yubinxing.workers.dev>",
+          from: "Battery Digest <onboarding@resend.dev>",
           to: email,
           subject: `Battery Digest - ${formatDate(today)}`,
           html: emailHtml.replace("{{UNSUB_EMAIL}}", encodeURIComponent(email)),
