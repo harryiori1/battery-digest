@@ -153,7 +153,7 @@ async function sendDailyNewsletter(env, debug = false) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Battery Digest <onboarding@resend.dev>",
+          from: "Battery Digest <digest@batterydigest.org>",
           to: email,
           subject: `Battery Digest - ${formatDate(today)}`,
           html: emailHtml.replace("{{UNSUB_EMAIL}}", encodeURIComponent(email)),
