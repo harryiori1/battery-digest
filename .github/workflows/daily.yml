@@ -6,6 +6,9 @@ on:
     - cron: '0 12 * * *'
   workflow_dispatch: # Allow manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   daily-digest:
     runs-on: ubuntu-latest
