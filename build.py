@@ -3,8 +3,13 @@
 
 Reads markdown content from content/, renders with Jinja2 templates,
 and outputs a complete static site to output/.
+
+Usage:
+    python build.py                 # build main site
+    python build.py --site solidstate  # build solid-state site
 """
 
+import argparse
 import os
 import re
 import shutil
@@ -19,13 +24,20 @@ from feedgen.feed import FeedGenerator
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONTENT_DIR = os.path.join(BASE_DIR, "content")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+# These are set per-site in build()
+CONTENT_DIR = os.path.join(BASE_DIR, "content")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 
 
-def load_config():
+def load_config(site="main"):
+    # Try site-specific config first, fall back to config.yaml
+    site_config = os.path.join(BASE_DIR, "config", "sites", f"{site}.yaml")
+    if os.path.exists(site_config):
+        with open(site_config, "r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
     with open(os.path.join(BASE_DIR, "config.yaml"), "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
@@ -85,9 +97,9 @@ def format_month(year, month):
     return f"{months[month]} {year}"
 
 
-def load_digests():
+def load_digests(digests_dir=None):
     digests = []
-    pattern = os.path.join(CONTENT_DIR, "digests", "*.md")
+    pattern = os.path.join(digests_dir or os.path.join(CONTENT_DIR, "digests"), "*.md")
 
     for filepath in glob.glob(pattern):
         meta, body = parse_frontmatter(filepath)
@@ -167,14 +179,29 @@ def generate_rss(digests, config):
     fg.rss_file(os.path.join(OUTPUT_DIR, "feed.xml"))
 
 
-def build():
-    config = load_config()
+def build(site="main"):
+    global CONTENT_DIR, OUTPUT_DIR
+
+    if site == "main":
+        CONTENT_DIR = os.path.join(BASE_DIR, "content")
+        OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+    else:
+        CONTENT_DIR = os.path.join(BASE_DIR, "content")  # pages are shared
+        OUTPUT_DIR = os.path.join(BASE_DIR, f"output-{site}")
+
+    config = load_config(site)
     year = datetime.now().year
 
     env = Environment(loader=FileSystemLoader(TEMPLATES_DIR), autoescape=True)
     ctx = {"site": config, "year": year}
 
-    digests = load_digests()
+    if site == "main":
+        digests_dir = os.path.join(BASE_DIR, "content", "digests")
+    else:
+        digests_dir = os.path.join(BASE_DIR, "content", f"digests-{site}")
+        os.makedirs(digests_dir, exist_ok=True)
+
+    digests = load_digests(digests_dir)
     pages = load_pages()
 
     if os.path.exists(OUTPUT_DIR):
@@ -237,4 +264,7 @@ def build():
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description="Battery Digest - Static Site Builder")
+    parser.add_argument("--site", default="main", help="Site to build (main, solidstate)")
+    args = parser.parse_args()
+    build(site=args.site)

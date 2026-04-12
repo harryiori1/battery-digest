@@ -2,12 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "solidstate-digest",
   "compatibility_date": "2026-04-08",
-  "main": "src/worker.js",
   "assets": {
-    "directory": "output-solidstate",
-    "binding": "ASSETS"
-  },
-  "triggers": {
-    "crons": ["0 13 * * *"]
+    "directory": "output-solidstate"
   }
 }

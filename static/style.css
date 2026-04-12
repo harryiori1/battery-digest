@@ -510,6 +510,80 @@ footer nav a {
   font-weight: 700;
 }
 
+/* === Subscribe Bar (bottom of every page) === */
+.subscribe-bar {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.subscribe-bar-inner {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.subscribe-bar-text {
+  margin-bottom: 1rem;
+}
+
+.subscribe-bar-text strong {
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.subscribe-bar-tagline {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.subscribe-bar-form {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.subscribe-bar-form input[type="email"] {
+  flex: 1;
+  max-width: 300px;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.subscribe-bar-form input[type="email"]:focus {
+  border-color: #2563eb;
+}
+
+.subscribe-bar-form button {
+  padding: 0.6rem 1.5rem;
+  background: #1a5c2a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.subscribe-bar-form button:hover {
+  background: #14461f;
+}
+
+.subscribe-bar-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* === Responsive === */
 @media (max-width: 600px) {
   body { padding: 0.75rem 1rem; }
