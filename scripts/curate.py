@@ -28,12 +28,26 @@ from pathlib import Path
 import yaml
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+def get_paths(site="main"):
+    """Get data and content paths for a given site."""
+    if site == "main":
+        data_dir = BASE_DIR / "data" / "raw"
+        content_dir = BASE_DIR / "content" / "digests"
+    else:
+        data_dir = BASE_DIR / "data" / f"raw-{site}"
+        content_dir = BASE_DIR / "content" / f"digests-{site}"
+    return data_dir, content_dir
+
+# Default paths (overridden in main() when --site is used)
 DATA_DIR = BASE_DIR / "data" / "raw"
 CONTENT_DIR = BASE_DIR / "content" / "digests"
 
 logger = logging.getLogger("curate")
 
 SYSTEM_PROMPT = """Battery news editor. Pick top 3 stories, 2 quick news.
+
+SCOPE: Only select stories directly about battery cells, battery packs, energy storage systems, EV battery supply chain, battery materials (cathode, anode, electrolyte, separator), battery manufacturing, or battery recycling. EXCLUDE stories about solar panels, wind energy, hydrogen fuel cells, EV reviews, autonomous driving, charging infrastructure (unless it involves battery technology like battery swapping), or general clean energy policy unless batteries are the central focus.
 
 Scoring: cross-source corroboration (strongest signal) > source authority > recency > engagement.
 
@@ -72,7 +86,63 @@ Rules:
 - Real URLs only. Output ONLY the markdown.
 - NEVER repeat topics from "ALREADY COVERED" list. If a story is an update on a previously covered topic (e.g. same company, same product, same trend), skip it.
 - Titles must be SPECIFIC. Include company names, numbers, or concrete details. BAD: "Global EV Market Trends", "Advancements in Battery Technology". GOOD: "CATL Opens 100GWh Hungary Plant", "Sodium-Ion Cells Hit 200Wh/kg in Lab Tests".
-- If fewer than 3 genuinely new stories exist, output only the ones that are real. NEVER pad with filler like "No New Developments"."""
+- If fewer than 3 genuinely new stories exist, output only the ones that are real. NEVER pad with filler like "No New Developments".
+- If there are truly no new stories today, output ONLY the frontmatter with an empty stories list and no body."""
+
+SYSTEM_PROMPT_SOLIDSTATE = """Solid-state battery news editor. You MUST be extremely strict about topic relevance.
+
+STRICT FILTER — an article qualifies ONLY if its MAIN topic is one of:
+- Solid-state battery technology (all-solid-state, semi-solid, condensed-matter batteries)
+- Solid electrolytes (sulfide, oxide, polymer, ceramic, garnet, LLZO, LGPS, argyrodite)
+- Lithium metal anodes specifically for solid-state cells
+- Dry electrode manufacturing processes for solid-state
+- Companies whose PRIMARY news is about solid-state: QuantumScape, Solid Power, ProLogium, SES AI, Factorial, Ilika, 清陶, 卫蓝新能源
+
+REJECT all of these even if they mention "battery":
+- Conventional lithium-ion (LFP, NMC, NCA) news
+- Battery swap, charging infrastructure, supercharging
+- General EV news, EV sales, EV launches
+- Sodium-ion, lithium-sulfur, flow batteries
+- Battery standardization, battery recycling (unless specifically about solid-state)
+- Company news that is NOT about their solid-state program
+- Market share reports about conventional batteries
+
+From the articles provided, pick ONLY those that pass the strict filter above. Output 1-3 stories maximum. If only 1 article qualifies, output 1 story. If zero qualify, output frontmatter with empty stories list.
+
+Output a Markdown file EXACTLY like this:
+
+---
+date: "YYYY-MM-DD"
+slug: "YYYY-MM-DD-short-slug"
+curated_from: NUMBER
+tags: [solid-state]
+stories:
+  - title: "Short Title"
+    subtitle: "One sentence"
+quick_news:
+  - title: "Brief item one"
+---
+
+## 01 Short Title
+Write a comprehensive 200-500 word article about this solid-state battery development. Cover: what happened, why it matters for solid-state commercialization, relevant numbers/specs, and implications. Write as a journalist for an English-speaking professional audience. Cite sources as inline links like [Source Name](url).
+
+Rules:
+- ALWAYS quote titles and subtitles in YAML frontmatter with double quotes.
+- Each article body MUST be 200-500 words.
+- Real URLs only. Output ONLY the markdown.
+- NEVER repeat topics from "ALREADY COVERED" list.
+- Titles must be SPECIFIC with company names and concrete details.
+- DO NOT force 3 stories. 1 real solid-state story is better than 3 irrelevant ones.
+- If ZERO articles pass the strict filter, output this exactly:
+
+---
+date: "YYYY-MM-DD"
+slug: "YYYY-MM-DD-no-solidstate-news"
+curated_from: NUMBER
+tags: [solid-state]
+stories: []
+quick_news: []
+---"""
 
 
 def load_raw_data(date_str):
@@ -166,7 +236,7 @@ def build_user_prompt(raw_data):
 
 # --- LLM Providers ---
 
-def call_gemini(user_prompt, model):
+def call_gemini(user_prompt, model, sys_prompt=None):
     """Call Google Gemini API."""
     from google import genai
 
@@ -183,7 +253,7 @@ def call_gemini(user_prompt, model):
         model=model,
         contents=user_prompt,
         config=genai.types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
+            system_instruction=sys_prompt or SYSTEM_PROMPT,
             temperature=0.3,
             max_output_tokens=4096,
         ),
@@ -196,7 +266,7 @@ def call_gemini(user_prompt, model):
     return text
 
 
-def call_claude(user_prompt, model):
+def call_claude(user_prompt, model, sys_prompt=None):
     """Call Anthropic Claude API."""
     import anthropic
 
@@ -206,7 +276,7 @@ def call_claude(user_prompt, model):
     response = client.messages.create(
         model=model,
         max_tokens=4096,
-        system=SYSTEM_PROMPT,
+        system=sys_prompt or SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_prompt}],
         temperature=0.3,
     )
@@ -217,7 +287,7 @@ def call_claude(user_prompt, model):
     return text
 
 
-def call_groq(user_prompt, model):
+def call_groq(user_prompt, model, sys_prompt=None):
     """Call Groq API (OpenAI-compatible)."""
     from groq import Groq
 
@@ -232,7 +302,7 @@ def call_groq(user_prompt, model):
     response = client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": sys_prompt or SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.3,
@@ -422,13 +492,16 @@ def pre_filter_covered_articles(raw_data, date_str):
     return raw_data
 
 
-def curate(date_str, provider, model, dry_run=False):
+def curate(date_str, provider, model, dry_run=False, site="main"):
     """Run the curation pipeline."""
+    logger.info(f"Loading raw data from {DATA_DIR / f'{date_str}.md'} or .json")
     raw_data = load_raw_data(date_str)
 
     if raw_data["total_articles"] == 0:
         logger.error("No articles found in raw data. Nothing to curate.")
         sys.exit(1)
+
+    logger.info(f"Loaded {raw_data['total_articles']} articles")
 
     # Remove articles already covered in recent digests
     raw_data = pre_filter_covered_articles(raw_data, date_str)
@@ -443,12 +516,15 @@ def curate(date_str, provider, model, dry_run=False):
     user_prompt = build_user_prompt(raw_data)
     logger.debug(f"User prompt length: {len(user_prompt)} chars")
 
+    # Select the right system prompt for the site
+    sys_prompt = SYSTEM_PROMPT_SOLIDSTATE if site == "solidstate" else SYSTEM_PROMPT
+
     if provider == "gemini":
-        response_text = call_gemini(user_prompt, model)
+        response_text = call_gemini(user_prompt, model, sys_prompt)
     elif provider == "claude":
-        response_text = call_claude(user_prompt, model)
+        response_text = call_claude(user_prompt, model, sys_prompt)
     elif provider == "groq":
-        response_text = call_groq(user_prompt, model)
+        response_text = call_groq(user_prompt, model, sys_prompt)
     else:
         logger.error(f"Unknown provider: {provider}")
         sys.exit(1)
@@ -483,6 +559,7 @@ def main():
     parser.add_argument("--provider", default="groq", choices=["gemini", "claude", "groq"],
                         help="LLM provider (default: gemini)")
     parser.add_argument("--model", default=None, help="Model name (defaults per provider)")
+    parser.add_argument("--site", default="main", help="Site to curate for (main, solidstate)")
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
 
@@ -492,8 +569,12 @@ def main():
         stream=sys.stderr,
     )
 
+    global DATA_DIR, CONTENT_DIR
+    DATA_DIR, CONTENT_DIR = get_paths(args.site)
+    logger.info(f"Site: {args.site}, data: {DATA_DIR}, content: {CONTENT_DIR}")
+
     model = args.model or DEFAULT_MODELS[args.provider]
-    curate(args.date, args.provider, model, args.dry_run)
+    curate(args.date, args.provider, model, args.dry_run, site=args.site)
 
 
 if __name__ == "__main__":

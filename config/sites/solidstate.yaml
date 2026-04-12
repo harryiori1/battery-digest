@@ -1,0 +1,19 @@
+title: "Solid State Digest"
+description: "Daily intelligence on solid-state battery development, breakthroughs, and commercialization"
+base_url: "https://solidstate.batterydigest.org"
+language: "en"
+tagline: "Solid-state battery intelligence. Daily."
+tagline_sub: "Tracking solid-state battery breakthroughs, commercialization timelines, and key players"
+author: "Solid State Digest"
+digests_per_home_page: 15
+contact_email: "binxing@batterydigest.org"
+
+nav:
+  - title: "Archive"
+    url: "/archive/"
+  - title: "Methodology"
+    url: "/methodology/"
+  - title: "Subscribe"
+    url: "/subscribe/"
+  - title: "RSS"
+    url: "/feed.xml"

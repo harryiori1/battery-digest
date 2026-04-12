@@ -29,6 +29,18 @@ import yaml
 from bs4 import BeautifulSoup
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+def get_paths(site="main"):
+    """Get config and data paths for a given site."""
+    if site == "main":
+        config_path = BASE_DIR / "config" / "sources.yaml"
+        data_dir = BASE_DIR / "data" / "raw"
+    else:
+        config_path = BASE_DIR / "config" / f"sources-{site}.yaml"
+        data_dir = BASE_DIR / "data" / f"raw-{site}"
+    return config_path, data_dir
+
+# Default paths (overridden in main() when --site is used)
 CONFIG_PATH = BASE_DIR / "config" / "sources.yaml"
 DATA_DIR = BASE_DIR / "data" / "raw"
 
@@ -389,6 +401,7 @@ def main():
     parser = argparse.ArgumentParser(description="Battery Digest - News Scraper")
     parser.add_argument("--date", default=str(date.today()), help="Date for output file (YYYY-MM-DD)")
     parser.add_argument("--source", help="Scrape a single source by name (for debugging)")
+    parser.add_argument("--site", default="main", help="Site to scrape for (main, solidstate)")
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
 
@@ -397,6 +410,10 @@ def main():
         format="%(asctime)s [%(levelname)s] %(message)s",
         stream=sys.stderr,
     )
+
+    global CONFIG_PATH, DATA_DIR
+    CONFIG_PATH, DATA_DIR = get_paths(args.site)
+    logger.info(f"Site: {args.site}, config: {CONFIG_PATH}, data: {DATA_DIR}")
 
     config = load_config()
     http_config = config.get("http", {})

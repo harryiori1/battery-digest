@@ -4,6 +4,7 @@ startup.bat
 
 # Generated output (rebuilt on deploy)
 output/
+output-solidstate/
 
 # Python
 __pycache__/

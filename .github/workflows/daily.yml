@@ -19,21 +19,43 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Scrape news
+      # --- Main site ---
+      - name: Scrape news (main)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python scripts/scrape.py
 
-      - name: Curate digest
+      - name: Curate digest (main)
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python scripts/curate.py
 
-      - name: Build site
+      - name: Build site (main)
         run: python build.py
 
-      - name: Deploy to Cloudflare
+      - name: Deploy main site
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           wranglerVersion: '4.81.1'
+
+      # --- Solid State site ---
+      - name: Scrape news (solidstate)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts/scrape.py --site solidstate
+
+      - name: Curate digest (solidstate)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts/curate.py --site solidstate
+
+      - name: Build site (solidstate)
+        run: python build.py --site solidstate
+
+      - name: Deploy solidstate site
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: '4.81.1'
+          command: deploy --config wrangler-solidstate.jsonc

@@ -1,0 +1,19 @@
+title: "Battery Digest"
+description: "Professional battery tech intelligence covering power batteries, energy storage, solid-state and sodium-ion batteries"
+base_url: "https://battery-digest.yubinxing.workers.dev"
+language: "en"
+tagline: "Battery tech intelligence. 3 stories. 5 minutes."
+tagline_sub: "20+ sources covering power batteries, energy storage, solid-state and sodium-ion batteries"
+author: "Battery Digest"
+digests_per_home_page: 15
+contact_email: "binxing@batterydigest.org"
+
+nav:
+  - title: "Archive"
+    url: "/archive/"
+  - title: "Methodology"
+    url: "/methodology/"
+  - title: "Subscribe"
+    url: "/subscribe/"
+  - title: "RSS"
+    url: "/feed.xml"

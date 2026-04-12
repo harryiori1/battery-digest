@@ -34,23 +34,32 @@ def main():
     parser.add_argument("--model", default=None, help="Model override")
     args = parser.parse_args()
 
+    sites = ["main", "solidstate"]
     print(f"=== Battery Digest Pipeline: {args.date} ===")
 
-    # Step 1: Scrape (if this fails, still try to build with existing content)
-    scrape_ok = run_step("Step 1: Scraping sources",
-        [sys.executable, "scripts/scrape.py", "--date", args.date])
+    for site in sites:
+        site_label = site.upper()
+        print(f"\n{'='*50}")
+        print(f"  Building site: {site_label}")
+        print(f"{'='*50}")
 
-    # Step 2: Curate (only if scrape succeeded)
-    if scrape_ok:
-        curate_cmd = [sys.executable, "scripts/curate.py", "--date", args.date, "--provider", args.provider]
-        if args.model:
-            curate_cmd.extend(["--model", args.model])
-        run_step("Step 2: Curating digest", curate_cmd)
+        # Step 1: Scrape
+        scrape_ok = run_step(f"[{site_label}] Scraping sources",
+            [sys.executable, "scripts/scrape.py", "--date", args.date, "--site", site])
 
-    # Step 3: Always build (ensures site is up-to-date even if today's curate failed)
-    run_step("Step 3: Building site", [sys.executable, "build.py"])
+        # Step 2: Curate (only if scrape succeeded)
+        if scrape_ok:
+            curate_cmd = [sys.executable, "scripts/curate.py", "--date", args.date,
+                          "--provider", args.provider, "--site", site]
+            if args.model:
+                curate_cmd.extend(["--model", args.model])
+            run_step(f"[{site_label}] Curating digest", curate_cmd)
 
-    print(f"\nDONE: Pipeline complete for {args.date}")
+        # Step 3: Always build
+        run_step(f"[{site_label}] Building site",
+            [sys.executable, "build.py", "--site", site])
+
+    print(f"\nDONE: Pipeline complete for {args.date} (all sites)")
 
 
 if __name__ == "__main__":

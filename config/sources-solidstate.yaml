@@ -1,6 +1,6 @@
-# Battery Digest - Source Configuration
+# Solid State Digest - Source Configuration
 
-# Battery-related keyword filters (match title + snippet)
+# Use broad battery keywords to cast a wide net - the LLM curator handles solid-state filtering
 keywords:
   en:
     - battery
@@ -25,11 +25,15 @@ keywords:
     - SK On
     - QuantumScape
     - Solid Power
+    - ProLogium
     - wh/kg
     - kwh
     - gigafactory
     - battery recycling
-    - battery swap
+    - Toyota battery
+    - condensed battery
+    - semi-solid
+    - dry electrode
   zh:
     - 电池
     - 储能
@@ -48,11 +52,12 @@ keywords:
     - 蜂巢能源
     - 赣锋锂业
     - 电芯
-    - 充电桩
-    - 超充
-    - 换电
+    - 固态电池
+    - 全固态
+    - 半固态
+    - 凝聚态
 
-# Source list
+# Same sources as main site - the keyword filter narrows to solid-state topics
 sources:
   # --- English sources ---
   - name: "Electrek"
@@ -125,30 +130,38 @@ sources:
       link: ""
       snippet: ""
 
-  - name: "高工锂电"
-    url: "https://www.gg-lb.com/art/news"
-    type: html
-    language: zh
-    enabled: false  # Server down (503), SSL expired
-    selectors:
-      article_list: "div.article-item"
-      title: "h3 a"
-      link: "h3 a"
-      snippet: "p.summary"
+  # --- Solid-state company PR feeds ---
+  - name: "ProLogium"
+    url: "https://prologium.com/feed/"
+    type: rss
+    language: en
+    enabled: true
 
-  - name: "电池中国网"
-    url: "https://www.cbea.com/xny/"
+  - name: "Blue Solutions"
+    url: "https://www.blue-solutions.com/feed/"
+    type: rss
+    language: en
+    enabled: true
+
+  - name: "QuantumScape"
+    url: "https://www.quantumscape.com/press-releases"
     type: html
-    language: zh
-    enabled: false  # Connection timeout
+    language: en
+    enabled: false  # 403 Forbidden - site blocks scrapers
     selectors:
-      article_list: "ul.listBox li"
-      title: "a"
-      link: "a"
+      article_list: "a:has(h1.ae-element-post-title)"
+      title: "h1"
+      link: ""
       snippet: ""
+
+  - name: "Google News Solid-State"
+    url: "https://news.google.com/rss/search?q=%22solid-state+battery%22+OR+%22solid+state+battery%22+OR+QuantumScape+OR+%22Solid+Power%22&hl=en-US&gl=US&ceid=US:en"
+    type: rss
+    language: en
+    enabled: true
 
 # HTTP config
 http:
   timeout: 15
   max_retries: 2
-  user_agent: "BatteryDigest/1.0 (news aggregator)"
+  user_agent: "SolidStateDigest/1.0 (news aggregator)"
