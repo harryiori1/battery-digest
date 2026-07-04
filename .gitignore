@@ -6,6 +6,13 @@ startup.bat
 output/
 output-solidstate/
 
+# Intermediate scrape data — regenerated every run, not used by build/deploy
+data/raw/
+
+# Local caches (not meant to be tracked)
+.wrangler/
+.claude/
+
 # Python
 __pycache__/
 *.pyc
