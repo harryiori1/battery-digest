@@ -8,6 +8,7 @@ output-solidstate/
 
 # Intermediate scrape data — regenerated every run, not used by build/deploy
 data/raw/
+data/raw-solidstate/
 
 # Local caches (not meant to be tracked)
 .wrangler/

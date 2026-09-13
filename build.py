@@ -105,6 +105,10 @@ def load_digests(digests_dir=None):
         meta, body = parse_frontmatter(filepath)
         if not meta.get("date"):
             continue
+        if not meta.get("stories"):
+            # "No news today" digests carry only frontmatter. Skip them so the
+            # home page, archive and RSS feed never show an empty entry.
+            continue
 
         html_body = md_to_html(body)
         story_sections = split_stories(html_body)
