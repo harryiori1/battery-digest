@@ -9,6 +9,8 @@ on:
 jobs:
   daily-digest:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # commit generated digests back to the repo
     steps:
       - uses: actions/checkout@v4
 
@@ -59,3 +61,21 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           wranglerVersion: '4.81.1'
           command: deploy --config wrangler-solidstate.jsonc
+
+      # --- Persist today's digests ---
+      # Without this, a digest only exists in the runner and vanishes from the
+      # site on the next deploy. Runs even if an earlier step failed so partial
+      # results (e.g. main succeeded, solidstate failed) are still saved.
+      - name: Commit new digests
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/digests/ content/digests-solidstate/
+          if git diff --cached --quiet; then
+            echo "No new digests to commit"
+            exit 0
+          fi
+          git commit -m "Daily digest $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push origin main
