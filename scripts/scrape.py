@@ -311,7 +311,7 @@ def translate_chinese_titles(articles):
         client = Groq(api_key=api_key)
         logger.info(f"Translating {len(zh_articles)} Chinese titles...")
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model=os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b"),
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
             max_tokens=2048,

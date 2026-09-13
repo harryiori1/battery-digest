@@ -413,7 +413,7 @@ def validate_output(md_content, raw_data):
 DEFAULT_MODELS = {
     "gemini": "gemini-2.5-flash",
     "claude": "claude-sonnet-4-20250514",
-    "groq": "llama-3.3-70b-versatile",
+    "groq": os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b"),
 }
 
 
@@ -539,7 +539,7 @@ def curate(date_str, provider, model, dry_run=False, site="main"):
         print(md_content)
         print(f"\n--- Validation: {len(warnings)} warning(s) ---")
         for w in warnings:
-            print(f"  ⚠ {w}")
+            print(f"  WARNING: {w}")
         return
 
     CONTENT_DIR.mkdir(parents=True, exist_ok=True)
@@ -562,6 +562,11 @@ def main():
     parser.add_argument("--site", default="main", help="Site to curate for (main, solidstate)")
     parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
+
+    # Windows consoles default to a legacy codepage (e.g. GBK); force UTF-8 so
+    # --dry-run output with non-ASCII characters does not crash.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
