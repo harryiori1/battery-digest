@@ -14,7 +14,12 @@ python build.py --site solidstate  # 构建 solid-state 站 → output-solidstat
 npx wrangler deploy                # 部署主站（wrangler.jsonc）
 ```
 
-`startup.bat` 由任务计划触发。
+每日流程由 GitHub Actions 跑（`.github/workflows/daily.yml`，每天 12:00 UTC）：两站各自
+scrape → curate → build → `wrangler deploy`，最后把新 digest 提交回仓库。Cloudflare 本身只托管静态
+文件，Worker 里 13:00 UTC 的 cron 只负责给订阅者发邮件。
+
+`startup.bat` 是旧的本地跑法（任务计划 BatteryDigest，登录触发），2026-09-13 起已停用。不要和
+Actions 同时开着：同一天会被 curate 两次，且本地 push 会因落后于远端而失败。
 
 ## 结构
 
