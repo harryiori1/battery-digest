@@ -14,6 +14,8 @@
     }
   ],
   "triggers": {
-    "crons": ["0 13 * * *"]
+    // Hourly. The worker mails a digest only once and only if it is new, so
+    // frequent ticks are cheap and the mail goes out soon after the deploy.
+    "crons": ["17 * * * *"]
   }
 }
